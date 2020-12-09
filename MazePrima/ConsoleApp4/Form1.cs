@@ -133,11 +133,12 @@ namespace ConsoleApp4 {
 
             
             Maze maze = new Maze(wid, hgt);
+            maze.MazeInit();
 
             //обрабатываем прорисовку финиша при нечетных размерах
-            maze.finish.X = maze.finish.X + oddW;
-            maze.finish.Y = maze.finish.Y + oddH;
-            maze.CreateMaze();
+            maze.Finish.X = maze.Finish.X + oddW;
+            maze.Finish.Y = maze.Finish.Y + oddH;
+            maze.MazeCreate();
             DrawMaze();
 
             inMaze = maze;
@@ -146,8 +147,8 @@ namespace ConsoleApp4 {
                 inBm.Dispose();
                 //создаем битмап так, чтобы захватить и финиш и стенку за ним
                 Bitmap bm = new Bitmap(
-                    CellWid * (maze.finish.X + 2),
-                    CellHgt * (maze.finish.Y + 2), System.Drawing.Imaging.PixelFormat.Format16bppRgb555);
+                    CellWid * (maze.Finish.X + 2),
+                    CellHgt * (maze.Finish.Y + 2), System.Drawing.Imaging.PixelFormat.Format16bppRgb555);
 
                 Brush whiteBrush = new SolidBrush(Color.White);
                 Brush blackBrush = new SolidBrush(Color.Black);
@@ -155,12 +156,12 @@ namespace ConsoleApp4 {
                 using (Graphics gr = Graphics.FromImage(bm)) {
 
                     gr.SmoothingMode = SmoothingMode.AntiAlias;
-                    for (var i = 0; i < maze._cells.GetUpperBound(0) + oddW; i++)
-                        for (var j = 0; j < maze._cells.GetUpperBound(1) + oddH; j++) {
+                    for (var i = 0; i < maze.Cells.GetUpperBound(0) + oddW; i++)
+                        for (var j = 0; j < maze.Cells.GetUpperBound(1) + oddH; j++) {
                             Point point = new Point(i * CellWid, j * CellWid);
                             Size size = new Size(CellWid, CellWid);
                             Rectangle rec = new Rectangle(point, size);
-                            if (maze._cells[i, j].IsCell) {
+                            if (maze.Cells[i, j].IsCell) {
                                 gr.FillRectangle(whiteBrush, rec);
                             } else {
 
@@ -169,10 +170,10 @@ namespace ConsoleApp4 {
                         }
 
                     gr.FillRectangle(new SolidBrush(Color.Green),    //заливаем старт зеленым
-                        new Rectangle(new Point(maze.start.X * CellWid, maze.start.Y * CellWid),
+                        new Rectangle(new Point(maze.Start.X * CellWid, maze.Start.Y * CellWid),
                         new Size(CellWid, CellWid)));
                     gr.FillRectangle(new SolidBrush(Color.Red),       //а финиш красным
-                        new Rectangle(new Point(maze.end.X * CellWid, maze.end.Y * CellWid),
+                        new Rectangle(new Point(maze.End.X * CellWid, maze.End.Y * CellWid),
                         new Size(CellWid, CellWid)));
                 }
 

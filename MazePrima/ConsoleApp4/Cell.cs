@@ -9,8 +9,8 @@
 
         public Cell(int x, int y, bool isVisited = false, bool isCell = true)
         {
-            X = x;
-            Y = y;
+            X = x < 0 ? 0 : x;
+            Y = y < 0 ? 0 : y;
             IsCell = isCell;
             IsVisited = isVisited;
         }

@@ -1,65 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using System.Collections.Specialized;
 using mazeGenerator_dfs;
 
 namespace ConsoleApp4
 {
-    class Maze
+    internal class Maze
     {
-        public readonly Cell[,] _cells;
-        public int _width;
-        public int _height;
+        public readonly Cell[,] Cells;
+        public int Width;
+        public int Height;
         public Stack<Cell> _path = new Stack<Cell>();
         public List<Cell> _solve = new List<Cell>();
         public List<Cell> _visited = new List<Cell>();
         public List<Cell> _neighbours = new List<Cell>();
         public Random rnd = new Random();
-        public Cell start;
-        public Cell finish;
-        public Cell end;
+        public Cell Start;
+        public Cell Finish;
+        public Cell End;
 
-        public Maze(int wid, int hgt)
+        public Maze(int width, int height)
         {
-            start = new Cell(1, 1, true, true);
-            finish = new Cell(wid - 3, hgt - 3, true, true);
+            Width = width > 4 ? width : 10;
+            Height = height > 4 ? height : 10;
 
+            Start = new Cell(1, 1, true, true);
+            Finish = new Cell(Width - 3, Height - 3, true, true);
 
-            
+            Cells = new Cell[Width, Height];
+        }
 
-
-
-
-            _cells = new Cell[wid, hgt];
-            
-            _width = wid;
-            _height = hgt;
-            for (var i = 0; i < wid; i++)
-                for (var j = 0; j < hgt; j++)
-                    if ((i % 2 != 0 && j % 2 != 0) && (i < _width - 1 && j < _height - 1)) //если ячейка нечетная по х и по у и не выходит за пределы лабиринта
+        public void MazeInit()
+        {
+            for (var i = 0; i < Width; i++)
+                for (var j = 0; j < Height; j++)
+                    if ((i % 2 != 0 && j % 2 != 0) && (i < this.Width - 1 && j < this.Height - 1)) //если ячейка нечетная по х и по у и не выходит за пределы лабиринта
                     {
-                        _cells[i, j] = new Cell(i, j); //то это клетка (по умолчанию)
+                        Cells[i, j] = new Cell(i, j); //то это клетка (по умолчанию)
                     }
                     else
                     {
-
-                        _cells[i, j] = new Cell(i, j, false, false);
+                        Cells[i, j] = new Cell(i, j, false, false);
                     }
-            _path.Push(start);
-            _cells[start.X, start.Y] = start;
+            _path.Push(Start);
+            Cells[Start.X, Start.Y] = Start;
         }
-        
-        public void CreateMaze()
+
+        public void MazeCreate()
         {
-            _cells[start.X, start.Y] = start;
+            Cells[Start.X, Start.Y] = Start;
             while (_path.Count != 0) //пока в стеке есть клетки ищем соседей и строим путь
             {
                 _neighbours.Clear();
@@ -69,7 +58,7 @@ namespace ConsoleApp4
                     Cell nextCell = ChooseNeighbour(_neighbours);
                     RemoveWall(_path.Peek(), nextCell);
                     nextCell.IsVisited = true; //делаем текущую клетку посещенной
-                    _cells[nextCell.X, nextCell.Y].IsVisited = true; //и в общем массиве
+                    Cells[nextCell.X, nextCell.Y].IsVisited = true; //и в общем массиве
                     _path.Push(nextCell); //затем добавляем её в стек
 
                 }
@@ -77,17 +66,16 @@ namespace ConsoleApp4
                 {
                     _path.Pop();
                 }
-
             }
 
             var endCels = new List<Cell>();
 
-            foreach (var cell in _cells)
+            foreach (var cell in Cells)
             {
                 int x = cell.X;
                 int y = cell.Y;
 
-                if (!_cells[x, y].IsCell)
+                if (!Cells[x, y].IsCell)
                 {
                     continue;
                 }
@@ -99,7 +87,7 @@ namespace ConsoleApp4
                 {
                     possibleNeighbours = new List<Cell>
                     {
-                        _cells[x, y - distance], _cells[x + distance, y], _cells[x, y + distance], _cells[x - distance, y]
+                        Cells[x, y - distance], Cells[x + distance, y], Cells[x, y + distance], Cells[x - distance, y]
                     };
 
                 }
@@ -118,10 +106,10 @@ namespace ConsoleApp4
                 }
 
                 if (wayCount == 0) continue;
-                if (wayCount == 1) endCels.Add(_cells[cell.X, cell.Y]);
+                if (wayCount == 1) endCels.Add(Cells[cell.X, cell.Y]);
             }
 
-            end = endCels.LastOrDefault();
+            End = endCels.LastOrDefault();
 
 
         }
@@ -141,9 +129,9 @@ namespace ConsoleApp4
             for (int i = 0; i < 4; i++) // Проверяем все 4 направления
             {
                 Cell curNeighbour = possibleNeighbours[i];
-                if (curNeighbour.X > 0 && curNeighbour.X < _width && curNeighbour.Y > 0 && curNeighbour.Y < _height)
+                if (curNeighbour.X > 0 && curNeighbour.X < Width && curNeighbour.Y > 0 && curNeighbour.Y < Height)
                 {// Если сосед не выходит за стенки лабиринта
-                    if (_cells[curNeighbour.X, curNeighbour.Y].IsCell && !_cells[curNeighbour.X, curNeighbour.Y].IsVisited)
+                    if (Cells[curNeighbour.X, curNeighbour.Y].IsCell && !Cells[curNeighbour.X, curNeighbour.Y].IsVisited)
                     { // А также является клеткой и непосещен
                         _neighbours.Add(curNeighbour);
                     }// добавляем соседа в Лист соседей
@@ -168,10 +156,10 @@ namespace ConsoleApp4
             int addY = (yDiff != 0) ? yDiff / Math.Abs(yDiff) : 0;
 
             // Координаты удаленной стены
-            _cells[first.X + addX, first.Y + addY].IsCell = true; //обращаем стену в клетку
-            _cells[first.X + addX, first.Y + addY].IsVisited = true; //и делаем ее посещенной
+            Cells[first.X + addX, first.Y + addY].IsCell = true; //обращаем стену в клетку
+            Cells[first.X + addX, first.Y + addY].IsVisited = true; //и делаем ее посещенной
             second.IsVisited = true; //делаем клетку посещенной
-            _cells[second.X, second.Y] = second;
+            Cells[second.X, second.Y] = second;
 
         }
     }
