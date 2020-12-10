@@ -35,7 +35,7 @@ namespace ConsoleApp4
         }
 
 
-        public Maze(int width, int height)
+        private Maze(int width, int height)
         {
             Width = width;
             Height = height;
