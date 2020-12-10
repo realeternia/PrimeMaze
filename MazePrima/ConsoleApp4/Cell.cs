@@ -26,7 +26,7 @@ namespace mazeGenerator_dfs
             return Result<Cell>.Success(new Cell(x, y));
         }
 
-        public Cell(int x, int y, bool isVisited = false, bool isCell = true)
+        private Cell(int x, int y, bool isVisited = false, bool isCell = true)
         {
             X = x < 0 ? 0 : x;
             Y = y < 0 ? 0 : y;
