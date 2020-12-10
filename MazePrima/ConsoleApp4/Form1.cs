@@ -46,35 +46,14 @@ namespace ConsoleApp4 {
         }
 
         public static int GetHeight() {
-            var errors = new List<string>();
-
-            if (!int.TryParse(ConfigurationManager.AppSettings["Height"], out var height))
-            {
-                errors.Add("Поле Height не удалось преобразовать в int");
-            }
-
-            if (height < 5)
-            {
-                errors.Add("Поле Height не может иметь значение меньше 5");
-            }
-
-            return errors.Any() ? 10 : height;
+            int.TryParse(ConfigurationManager.AppSettings["Height"], out var height);
+            return height > 0 ? height : 0;
         }
+
         public static int GetWidth()
         {
-            var errors = new List<string>();
-
-            if (!int.TryParse(ConfigurationManager.AppSettings["Width"], out var width))
-            {
-                errors.Add("Поле Width не удалось преобразовать в int");
-            }
-
-            if (width < 5)
-            {
-                errors.Add("Поле Width не может иметь значение меньше 5");
-            }
-            
-            return errors.Any() ? 10 : width;
+            int.TryParse(ConfigurationManager.AppSettings["Width"], out var width);
+            return width > 0 ? width : 0;
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -86,21 +65,13 @@ namespace ConsoleApp4 {
 
         private void createBtn_Click(object sender, EventArgs e)
         {
-            var errors = new List<string>();
+            int.TryParse(txtWidth.Text, out var wid);
+            int.TryParse(txtHeight.Text, out var hgt);
 
-            //Добавим проверку на корректность введенных размеров
-            if (!int.TryParse(txtWidth.Text, out var wid) || wid < 5)
+            var createResult = Maze.Create(wid, hgt);
+            if (!createResult.Succeeded)
             {
-                errors.Add("Поле Width должно иметь значение больше 4");
-            }
-            if (!int.TryParse(txtHeight.Text, out var hgt) || hgt < 5)
-            {
-                errors.Add("Поле Height должно иметь значение больше 4");
-            }
-
-            if (errors.Count > 0)
-            {
-                MessageBox.Show(string.Join(", ", errors), "Error", MessageBoxButtons.OK);
+                MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания лабиринта", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             
@@ -130,9 +101,8 @@ namespace ConsoleApp4 {
                 CellWid = CellHgt;
             } else if (CellWid > CellHgt) CellWid = CellHgt;
             else CellHgt = CellWid;
-
             
-            Maze maze = new Maze(wid, hgt);
+            Maze maze = createResult.Value;
             maze.MazeInit();
 
             //обрабатываем прорисовку финиша при нечетных размерах
@@ -179,7 +149,6 @@ namespace ConsoleApp4 {
 
                 picMaze.Image = bm; //отображаем 
                 inBm = bm;
-
             }
         }
     }
