@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using mazeGenerator_dfs;
 
 namespace ConsoleApp4
@@ -40,8 +41,22 @@ namespace ConsoleApp4
             Width = width;
             Height = height;
 
-            Start = new Cell(1, 1, true, true);
-            Finish = new Cell(Width - 3, Height - 3, true, true);
+            var createResult = Cell.Create(1, 1, true, true);
+            if (!createResult.Succeeded)
+            {
+                MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания ячейки", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Start = createResult.Value;
+
+            createResult = Cell.Create(Width - 3, Height - 3, true, true);
+            if (!createResult.Succeeded)
+            {
+                MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания ячейки", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Finish = createResult.Value;
+
             Cells = new Cell[Width, Height];
         }
 
@@ -51,11 +66,24 @@ namespace ConsoleApp4
                 for (var j = 0; j < Height; j++)
                     if ((i % 2 != 0 && j % 2 != 0) && (i < this.Width - 1 && j < this.Height - 1)) //если ячейка нечетная по х и по у и не выходит за пределы лабиринта
                     {
-                        Cells[i, j] = new Cell(i, j); //то это клетка (по умолчанию)
+                        var createResult = Cell.Create(i, j);
+                        if (!createResult.Succeeded)
+                        {
+                            MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания ячейки", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        Cells[i, j] = createResult.Value; //то это клетка (по умолчанию)
                     }
                     else
                     {
-                        Cells[i, j] = new Cell(i, j, false, false);
+                        var createResult = Cell.Create(i, j, false, false);
+                        if (!createResult.Succeeded)
+                        {
+                            MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания ячейки", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        Cells[i, j] = createResult.Value;
                     }
             _path.Push(Start);
             Cells[Start.X, Start.Y] = Start;
@@ -134,12 +162,51 @@ namespace ConsoleApp4
             int x = localcell.X;
             int y = localcell.Y;
             const int distance = 2;
+
+            var distX = x - distance < 0 ? 0 : x - distance;
+            var distY = y - distance < 0 ? 0 : y - distance;
+            var createResult = Cell.Create(x, distY);
+            if (!createResult.Succeeded)
+            {
+                MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания ячейки", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var up = createResult.Value;
+
+            createResult = Cell.Create(x + distance, y);
+            if (!createResult.Succeeded)
+            {
+                MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания ячейки", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var right = createResult.Value;
+
+            createResult = Cell.Create(x, y + distance);
+            if (!createResult.Succeeded)
+            {
+                MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания ячейки", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var down = createResult.Value;
+
+            createResult = Cell.Create(distX, y);
+            if (!createResult.Succeeded)
+            {
+                MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания ячейки", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var left = createResult.Value;
+
             Cell[] possibleNeighbours = new[] // Список всех возможных соседeй
             {
-                new Cell(x, y - distance), // Up
-                new Cell(x + distance, y), // Right
-                new Cell(x, y + distance), // Down
-                new Cell(x - distance, y) // Left
+                up, // Up
+                right, // Right
+                down, // Down
+                left // Left
             };
             for (int i = 0; i < 4; i++) // Проверяем все 4 направления
             {

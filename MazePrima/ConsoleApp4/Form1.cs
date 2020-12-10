@@ -19,7 +19,6 @@ namespace ConsoleApp4 {
 
 
         private int CellWid, CellHgt;
-        Maze inMaze = new Maze(10, 10);
         Bitmap inBm = new Bitmap(1, 1);
 
 
@@ -74,7 +73,7 @@ namespace ConsoleApp4 {
                 MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания лабиринта", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            
+
             int oddW = 0;
             int oddH = 0;
 
@@ -110,8 +109,6 @@ namespace ConsoleApp4 {
             maze.Finish.Y = maze.Finish.Y + oddH;
             maze.MazeCreate();
             DrawMaze();
-
-            inMaze = maze;
 
             void DrawMaze() {
                 inBm.Dispose();
