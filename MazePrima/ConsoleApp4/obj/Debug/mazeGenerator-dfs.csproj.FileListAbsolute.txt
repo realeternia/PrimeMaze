@@ -28,3 +28,13 @@ D:\VSprojects\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator-dfs.csproj.GenerateR
 D:\VSprojects\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator-dfs.csproj.CoreCompileInputs.cache
 D:\VSprojects\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator_dfs.exe
 D:\VSprojects\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator_dfs.pdb
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator-dfs.csprojAssemblyReference.cache
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\obj\Debug\ConsoleApp4.Form1.resources
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator_dfs.Properties.Resources.resources
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator-dfs.csproj.GenerateResource.cache
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator-dfs.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator_dfs.exe
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\obj\Debug\mazeGenerator_dfs.pdb
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\bin\Debug\mazeGenerator_dfs.exe.config
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\bin\Debug\mazeGenerator_dfs.exe
+C:\Users\User\Desktop\MazePrima\ConsoleApp4\bin\Debug\mazeGenerator_dfs.pdb

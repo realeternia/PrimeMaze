@@ -11,7 +11,7 @@ namespace mazeGenerator_dfs
         public bool IsCell { get; set; }
         public bool IsVisited { get; set; }
 
-        public static Result<Cell> Create(int x, int y, bool isVisited = false, bool isCell = true)
+        public static Result<Cell> Create(int x, int y)
         {
             var errors = new List<string>();
 
@@ -23,10 +23,10 @@ namespace mazeGenerator_dfs
                 return Result<Cell>.Fail(errors);
             }
 
-            return Result<Cell>.Success(new Cell(x, y, isVisited, isCell));
+            return Result<Cell>.Success(new Cell(x, y));
         }
 
-        private Cell(int x, int y, bool isVisited = false, bool isCell = true)
+        public Cell(int x, int y, bool isVisited = false, bool isCell = true)
         {
             X = x < 0 ? 0 : x;
             Y = y < 0 ? 0 : y;
