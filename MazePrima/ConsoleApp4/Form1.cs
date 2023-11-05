@@ -69,11 +69,6 @@ namespace ConsoleApp4 {
             int.TryParse(txtHeight.Text, out var hgt);
 
             var createResult = Maze.Create(wid, hgt);
-            if (!createResult.Succeeded)
-            {
-                MessageBox.Show(string.Join(Environment.NewLine, createResult.Errors), "Ошибка создания лабиринта", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
             
             int oddW = 0;
             int oddH = 0;
@@ -102,7 +97,7 @@ namespace ConsoleApp4 {
             } else if (CellWid > CellHgt) CellWid = CellHgt;
             else CellHgt = CellWid;
             
-            Maze maze = createResult.Value;
+            Maze maze = createResult;
             maze.MazeInit();
 
             //обрабатываем прорисовку финиша при нечетных размерах

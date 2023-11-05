@@ -19,19 +19,14 @@ namespace ConsoleApp4
         public Cell Finish;
         public Cell End;
 
-        public static Result<Maze> Create(int width, int height)
+        public static Maze Create(int width, int height)
         {
             var errors = new List<string>();
 
             if (width < 5) { errors.Add("Параметр width должен быть больше 4"); };
             if (height < 5) { errors.Add("Параметр height должен быть больше 4"); }
 
-            if (errors.Any())
-            {
-                return Result<Maze>.Fail(errors);
-            }
-
-            return Result<Maze>.Success(new Maze(width, height));
+            return new Maze(width, height);
         }
 
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ConsoleApp4;
 
@@ -11,19 +12,15 @@ namespace mazeGenerator_dfs
         public bool IsCell { get; set; }
         public bool IsVisited { get; set; }
 
-        public static Result<Cell> Create(int x, int y)
+        public static Cell Create(int x, int y)
         {
             var errors = new List<string>();
 
             if (x < 0) { errors.Add("Параметр X должен быть больше 0"); };
             if (y < 0) { errors.Add("Параметр Y должен быть больше 0"); }
 
-            if (errors.Any())
-            {
-                return Result<Cell>.Fail(errors);
-            }
 
-            return Result<Cell>.Success(new Cell(x, y));
+            return new Cell(x, y);
         }
 
         public Cell(int x, int y, bool isVisited = false, bool isCell = true)
@@ -34,5 +31,6 @@ namespace mazeGenerator_dfs
             IsVisited = isVisited;
         }
     }
+
 }
 
