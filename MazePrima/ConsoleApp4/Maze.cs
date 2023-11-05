@@ -19,6 +19,7 @@ namespace ConsoleApp4
         public Cell Finish;
         public Cell End;
 
+
         public static Maze Create(int width, int height)
         {
             var errors = new List<string>();
@@ -35,7 +36,7 @@ namespace ConsoleApp4
             Width = width;
             Height = height;
 
-            Start = new Cell(1, 1, true, true);
+             Start = new Cell(1, 1, true, true);
             Finish = new Cell(Width - 3, Height - 3, true, true);
             Cells = new Cell[Width, Height];
         }
@@ -44,6 +45,7 @@ namespace ConsoleApp4
         {
             for (var i = 0; i < Width; i++)
                 for (var j = 0; j < Height; j++)
+                {
                     if ((i % 2 != 0 && j % 2 != 0) && (i < this.Width - 1 && j < this.Height - 1)) //если ячейка нечетная по х и по у и не выходит за пределы лабиринта
                     {
                         Cells[i, j] = new Cell(i, j); //то это клетка (по умолчанию)
@@ -52,6 +54,11 @@ namespace ConsoleApp4
                     {
                         Cells[i, j] = new Cell(i, j, false, false);
                     }
+
+                    if (i >= Width / 2 - 1 && i <= Width / 2 + 1 && j >= Height / 2 - 1 && j <= Height / 2 + 1)
+                        Cells[i, j].IsCell = false;
+                }
+
             _path.Push(Start);
             Cells[Start.X, Start.Y] = Start;
         }

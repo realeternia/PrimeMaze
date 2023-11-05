@@ -31,13 +31,13 @@ namespace ConsoleApp4 {
             //отображать ли предупреждение, если пользователь указывает несуществующий путь
             savedialog.CheckPathExists = true;
             //список форматов файла, отображаемый в поле "Тип файла"
-            savedialog.Filter = "Image Files(*.JPG)|*.JPG|Image Files(*.PNG)|*.PNG|All files (*.*)|*.*";
+            savedialog.Filter = "Image Files(*.PNG)|*.PNG|Image Files(*.JPG)|*.JPG|All files (*.*)|*.*";
             //отображается ли кнопка "Справка" в диалоговом окне
             savedialog.ShowHelp = true;
             if (savedialog.ShowDialog() == DialogResult.OK) //если в диалоговом окне нажата кнопка "ОК"
             {
                 try {
-                    picMaze.Image.Save(savedialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    picMaze.Image.Save(savedialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
                 } catch {
                     MessageBox.Show("Невозможно сохранить изображение", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -83,8 +83,8 @@ namespace ConsoleApp4 {
 
             //вычисляем ширину одной ячейки, чтобы автомасштабировать полученную картинку
 
-            CellWid = picMaze.ClientSize.Width / (wid + 2);
-            CellHgt = picMaze.ClientSize.Height / (hgt + 2);
+            CellWid = picMaze.ClientSize.Width*2 / (wid + 2);
+            CellHgt = picMaze.ClientSize.Height*2 / (hgt + 2);
 
             //Установим минимальный размер ячейки, чтобы глаза не выпадывали
             int CellMin = 10;
@@ -104,42 +104,48 @@ namespace ConsoleApp4 {
             maze.Finish.X = maze.Finish.X + oddW;
             maze.Finish.Y = maze.Finish.Y + oddH;
             maze.MazeCreate();
-            DrawMaze();
 
-            Maze inMaze = maze;
+            maze.Cells[maze.Start.X - 1, maze.Start.Y].IsCell = true;
+            maze.Start = maze.Cells[maze.Start.X - 1, maze.Start.Y];
+            maze.Cells[maze.End.X + 1, maze.End.Y].IsCell = true;
+            maze.End = maze.Cells[maze.End.X + 1, maze.End.Y];
+
+            DrawMaze();
 
             void DrawMaze() {
                 inBm.Dispose();
                 //создаем битмап так, чтобы захватить и финиш и стенку за ним
                 Bitmap bm = new Bitmap(
                     CellWid * (maze.Finish.X + 2),
-                    CellHgt * (maze.Finish.Y + 2), System.Drawing.Imaging.PixelFormat.Format16bppRgb555);
+                    CellHgt * (maze.Finish.Y + 2));
 
                 Brush whiteBrush = new SolidBrush(Color.White);
                 Brush blackBrush = new SolidBrush(Color.Black);
 
                 using (Graphics gr = Graphics.FromImage(bm)) {
 
-                    gr.SmoothingMode = SmoothingMode.AntiAlias;
                     for (var i = 0; i < maze.Cells.GetUpperBound(0) + oddW; i++)
                         for (var j = 0; j < maze.Cells.GetUpperBound(1) + oddH; j++) {
                             Point point = new Point(i * CellWid, j * CellWid);
                             Size size = new Size(CellWid, CellWid);
                             Rectangle rec = new Rectangle(point, size);
-                            if (maze.Cells[i, j].IsCell) {
+                         
+                            if (maze.Cells[i, j].IsCell)
+                            {
                                 gr.FillRectangle(whiteBrush, rec);
-                            } else {
+                            }
+                            else {
 
                                 gr.FillRectangle(blackBrush, rec);
                             }
                         }
 
-                    gr.FillRectangle(new SolidBrush(Color.Green),    //заливаем старт зеленым
-                        new Rectangle(new Point(maze.Start.X * CellWid, maze.Start.Y * CellWid),
-                        new Size(CellWid, CellWid)));
-                    gr.FillRectangle(new SolidBrush(Color.Red),       //а финиш красным
-                        new Rectangle(new Point(maze.End.X * CellWid, maze.End.Y * CellWid),
-                        new Size(CellWid, CellWid)));
+                    //gr.FillRectangle(new SolidBrush(Color.Green),    //заливаем старт зеленым
+                    //    new Rectangle(new Point(maze.Start.X * CellWid, maze.Start.Y * CellWid),
+                    //    new Size(CellWid, CellWid)));
+                    //gr.FillRectangle(new SolidBrush(Color.Red),       //а финиш красным
+                    //    new Rectangle(new Point(maze.End.X * CellWid, maze.End.Y * CellWid),
+                    //    new Size(CellWid, CellWid)));
                 }
 
                 picMaze.Image = bm; //отображаем 
